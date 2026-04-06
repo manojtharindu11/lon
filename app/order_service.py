@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 from venv import logger
 from fastapi.responses import JSONResponse
@@ -58,7 +59,44 @@ class OrderService:
         return JSONResponse(content={"fulfillmentText": fulfillment_text})
 
     def remove_order(self):
-        pass
+        if self.session_id not in OrderService.in_progress_order:
+            fulfillment_text = "I am having trouble finding your order. Sorry! Can you place a new order"
+            logger.warning(fulfillment_text)
+        else:
+            current_order = OrderService.in_progress_order[self.session_id]
+            removed_items = []
+            no_such_items = []
+
+            for item in self.food_items:
+                if item in current_order.keys():
+                    del current_order[item]
+                    removed_items.append(item)
+                else:
+                    no_such_items.append(item)
+
+            if len(removed_items) > 0:
+                fulfillment_text = (
+                    f"Removed {', '.join(removed_items)} from your order. "
+                )
+                logging.info(fulfillment_text)
+
+            if len(no_such_items) > 0:
+                fulfillment_text += (
+                    f"Your current order does not have {', '.join(removed_items)} "
+                )
+                logging.info(
+                    f"Your current order does not have {', '.join(removed_items)}"
+                )
+
+            if len(current_order.keys()) == 0:
+                fulfillment_text += "Your order is empty. "
+                logging.info("Your order is empty.")
+            else:
+                order_str = get_str_from_food_dict(current_order)
+                fulfillment_text += f"Here is what left in your order: {order_str}"
+                logging.info(f"Here is what left in your order: {order_str}")
+
+        return JSONResponse(content={"fulfillment_text": fulfillment_text})
 
     def add_order(self):
         if (
