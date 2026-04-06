@@ -9,7 +9,6 @@ This repository contains:
 
 - Python 3.x
 - MySQL (with the tables/data used by the bot)
-- `ngrok` (included as `ngrok.exe` in this repo)
 
 ## Setup
 
@@ -73,7 +72,3 @@ Open the menu UI at:
 - `static webpage/index.html`
 
 (You can open it directly in a browser, or serve it with any static server.)
-
-## Notes
-
-- `requirements.txt` in this repo is UTF-16 encoded. If `pip install -r requirements.txt` fails on your machine, convert it to UTF-8 and retry.
