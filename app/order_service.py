@@ -5,6 +5,8 @@ from app.generic_helper import get_str_from_food_dict
 
 
 class OrderService:
+    in_progress_order: dict = {}
+
     def __init__(self, db, parameters: dict, output_context: dict):
         self.db = db
 
@@ -22,8 +24,6 @@ class OrderService:
             extracting_session_id(session_string) if session_string else None
         )
 
-        self.in_progress_order: dict = {}
-
     def complete_order(self):
         pass
 
@@ -32,24 +32,23 @@ class OrderService:
 
     def add_order(self):
         if (
-            len(self.food_items)
-            != len(self.quantities) | len(self.quantities)
-            == 0 | len(self.food_items)
-            == 0
+            len(self.food_items) != len(self.quantities)
+            or len(self.quantities) == 0
+            or len(self.food_items) == 0
         ):
             fulfillment_text = "Sorry I didn't understand. Can you please specify food items and quantities."
         else:
             food_dict = dict(zip(self.food_items, self.quantities))
 
-            if self.session_id in self.in_progress_order:
-                current_food_dict = self.in_progress_order[self.session_id]
-                self.in_progress_order[self.session_id] = current_food_dict.update(
-                    self.food_dict
-                )
+            if self.session_id in OrderService.in_progress_order:
+                current_food_dict = OrderService.in_progress_order[self.session_id]
+                current_food_dict.update(food_dict)
             else:
-                self.in_progress_order[self.session_id] = food_dict
+                OrderService.in_progress_order[self.session_id] = food_dict
 
-            order_str = get_str_from_food_dict(self.in_progress_order[self.session_id])
+            order_str = get_str_from_food_dict(
+                OrderService.in_progress_order[self.session_id]
+            )
             fulfillment_text = (
                 f"So far you have: {order_str}. Do you need anything else?"
             )
