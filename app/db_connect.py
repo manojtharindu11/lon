@@ -1,6 +1,8 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
+import logging
+from typing import Dict
 
 
 class DbConnect:
@@ -9,45 +11,98 @@ class DbConnect:
         self.user = os.getenv("USER", "root")
         self.password = os.getenv("PASSWORD", "")
         self.database = os.getenv("DATABASE", "")
-        self.cursor = None
         self.connect()
 
     def connect(self):
-        self.conn = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database,
-        )
+        try:
+            self.conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database,
+            )
 
-        if self.conn.is_connected():
-            print("Successfully connected to the database.")
-            self.cursor = self.conn.cursor()
+            if self.conn.is_connected():
+                logging.info("Connected to database.")
+        except mysql.connector.Error as e:
+            logging.info(f"Database connection error: {e}")
+
+    def ensure_connection(self):
+        conn = getattr(self, "conn", None)
+        if conn is None or not conn.is_connected():
+            self.connect()
+
+        if getattr(self, "conn", None) is None or not self.conn.is_connected():
+            raise RuntimeError("Database connection not available")
 
     def disconnect(self):
-        if self.cursor is not None:
-            self.cursor.close()
-        if self.conn.is_connected():
-            self.conn.disconnect()
-        print("Successfully close the database connection")
+        if hasattr(self, "conn") and self.conn.is_connected():
+            self.conn.close()
+            logging.info("Database connection closed")
 
     def get_order_status(self, order_id: int):
-        if self.cursor is not None:
-            query = "SELECT status FROM order_tracking WHERE order_id = %s"
+        self.ensure_connection()
 
-            self.cursor.execute(query, (order_id,))
-            result = self.cursor.fetchone()
+        with self.conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT status FROM order_tracking WHERE order_id = %s", (order_id,)
+            )
+            result = cursor.fetchone()
 
             if result is not None:
                 return result[0]
             else:
                 return None
 
-        else:
-            self.connect()
-            return self.get_order_status(order_id)
+    def save_order(self, order_dict: Dict[str, int]):
+        self.ensure_connection()
+        try:
+            with self.conn.cursor() as cursor:
+                food_names = tuple(order_dict.keys())
+                placeholders = ", ".join(["%s"] * len(food_names))
+
+                query = f"""
+                    SELECT name, item_id, price
+                    FROM food_items
+                    WHERE name IN ({placeholders})
+                """
+                cursor.execute(query, food_names)
+                results = cursor.fetchall()
+
+                if results is None:
+                    raise ValueError(f"{' ,'.join(food_names)} not found")
+
+                db_items = {name: (item_id, price) for name, item_id, price in results}
+
+                for food_item in order_dict.keys():
+                    if food_item not in db_items:
+                        raise ValueError(f"{food_item} not found")
+
+                for food_item, quantity in order_dict.items():
+                    item_id, price = db_items[food_item]
+
+                cursor.execute(
+                    "INSERT INTO orders(item_id, quantity, total_price) VALUES (%s,%s,%s)",
+                    (item_id, quantity, price * quantity),
+                )
+
+                order_id = cursor.lastrowid
+
+                logging.info(
+                    f"{food_item} - {quantity} = {quantity * price} added to database with order id: {order_id}"
+                )
+
+                self.conn.commit()
+
+                return order_id
+        except Exception as e:
+            self.conn.rollback()
+            logging.exception(f"Save order failed: {e}")
+            return -1
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, force=True)
     load_dotenv()
     mysql_conn = DbConnect()
+    mysql_conn.save_order({"Pizza": 2})
