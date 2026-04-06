@@ -108,48 +108,12 @@
         </section>
     </main>
 
-    <footer class="site-footer">&copy; 2026 Ape_Kama | All Rights Reserved</footer>
+    <footer class="site-footer">&copy; 2026 Ape Kama | All Rights Reserved</footer>
 
-    <div class="chat-widget" data-open="false">
-        <button class="chat-toggle" type="button" aria-label="Open chat" aria-expanded="false"
-            aria-controls="chat-panel">
-            <img class="chat-toggle-icon" src="avatar.png" alt="">
-        </button>
-
-        <section id="chat-panel" class="chat-panel" aria-label="Chatbot">
-            <div class="chat-panel-header">
-                <div class="chat-panel-title">Ask Us Anything</div>
-                <button class="chat-close" type="button" aria-label="Close chat">Close</button>
-            </div>
-            <iframe class="chat-frame" title="Ape_Kama chatbot" allow="microphone;" loading="lazy"
-                src="https://console.dialogflow.com/api-client/demo/embedded/3e770f6d-d31d-4c36-a234-a1f1cf6672f4"></iframe>
-        </section>
-    </div>
-
-    <script>
-        (function () {
-            const widget = document.querySelector('.chat-widget');
-            const toggle = document.querySelector('.chat-toggle');
-            const closeBtn = document.querySelector('.chat-close');
-
-            if (!widget || !toggle || !closeBtn) return;
-
-            function setOpen(isOpen) {
-                widget.dataset.open = String(isOpen);
-                toggle.setAttribute('aria-expanded', String(isOpen));
-                toggle.setAttribute('aria-label', isOpen ? 'Close chat' : 'Open chat');
-            }
-
-            toggle.addEventListener('click', function () {
-                const isOpen = widget.dataset.open === 'true';
-                setOpen(!isOpen);
-            });
-
-            closeBtn.addEventListener('click', function () {
-                setOpen(false);
-            });
-        })();
-    </script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger chat-icon="https://github.com/manojtharindu11/lon/blob/main/static%20webpage/avatar.png?raw=true"
+        intent="WELCOME" chat-title="Ion" agent-id="3e770f6d-d31d-4c36-a234-a1f1cf6672f4"
+        language-code="en"></df-messenger>
 
 </body>
 
