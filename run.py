@@ -31,7 +31,7 @@ async def handle_request(request: Request):
     parameters = payload["queryResult"]["parameters"]
     output_context = payload["queryResult"]["outputContexts"]
 
-    order_service = OrderService(mysql_connect, parameters)
+    order_service = OrderService(mysql_connect, parameters, output_context)
 
     intent_handler_dict = {
         "track.order - context: ongoing-tracking": order_service.track_order,
