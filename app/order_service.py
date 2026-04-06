@@ -25,6 +25,27 @@ class OrderService:
         )
 
     def complete_order(self):
+        if self.session_id not in OrderService.in_progress_order:
+            fulfillment_text = "I am having trouble finding your order. Sorry! Can you place a new order"
+        else:
+            order = OrderService.in_progress_order[self.order_id]
+            order_id = self.db.save_order(order)
+
+            if order_id == -1:
+                fulfillment_text = (
+                    "Sorry, I couldn't process your order due to backend error."
+                    "Please place a new order again"
+                )
+            else:
+                order_total = 10
+
+                fulfillment_text = (
+                    "Awesome. We have place your order."
+                    f"Here is your {order_id}."
+                    f"Your order total is {order_total}"
+                )
+
+    def save_order(self):
         pass
 
     def remove_order(self):
