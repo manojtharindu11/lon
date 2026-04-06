@@ -10,7 +10,7 @@ class DbConnect:
         self.host = os.getenv("HOST", "localhost")
         self.user = os.getenv("USER", "root")
         self.password = os.getenv("PASSWORD", "")
-        self.database = os.getenv("DATABASE", "")
+        self.database = os.getenv("DATABASE", "ape_kama_db")
         self.connect()
 
     def connect(self):
