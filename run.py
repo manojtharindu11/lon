@@ -4,12 +4,14 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from app.db_connect import DbConnect
 from app.order_service import OrderService
+import logging
 
 load_dotenv()
 mysql_connect = None
 
 
 async def lifespan(app: FastAPI):
+    logging.basicConfig(level=logging.INFO, force=True)
     global mysql_connect
     mysql_connect = DbConnect()
     yield
