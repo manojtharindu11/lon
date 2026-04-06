@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ape Kama - Food Menu</title>
+    <link rel="icon" type="image/png" href="avatar.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="brand">
+            <img class="brand-logo" src="avatar.png" alt="Ape_Kama logo">
+            <div>
+                <div class="brand-title">Ape Kama</div>
+                <div class="brand-subtitle">Our Delicious Menu</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="food-menu" aria-labelledby="menu-title">
+            <h2 id="menu-title">Food Items</h2>
+            <ul class="menu-strip" aria-label="Menu items">
+                <li class="menu-card">
+                    <img class="menu-img" src="images/rice-curry.svg" alt="Rice and curry" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Rice &amp; Curry</div>
+                        <div class="menu-price">LKR 400.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/kottu-roti.svg" alt="Kottu roti" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Kottu Roti</div>
+                        <div class="menu-price">LKR 550.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/hoppers.svg" alt="Hoppers" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Hoppers</div>
+                        <div class="menu-price">LKR 80.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/string-hoppers.svg" alt="String hoppers" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">String Hoppers</div>
+                        <div class="menu-price">LKR 15.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/pol-sambol.svg" alt="Pol sambol" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Pol Sambol</div>
+                        <div class="menu-price">LKR 150.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/fish-ambul-thiyal.svg" alt="Fish ambul thiyal" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Fish Ambul Thiyal</div>
+                        <div class="menu-price">LKR 600.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/parippu-curry.svg" alt="Parippu curry" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Parippu Curry</div>
+                        <div class="menu-price">LKR 200.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/chicken-curry.svg" alt="Chicken curry" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Chicken Curry</div>
+                        <div class="menu-price">LKR 650.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/egg-roti.svg" alt="Egg roti" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Egg Roti</div>
+                        <div class="menu-price">LKR 250.00</div>
+                    </div>
+                </li>
+
+                <li class="menu-card">
+                    <img class="menu-img" src="images/wade.svg" alt="Wade" loading="lazy">
+                    <div class="menu-info">
+                        <div class="menu-name">Wade</div>
+                        <div class="menu-price">LKR 60.00</div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">&copy; 2026 Ape_Kama | All Rights Reserved</footer>
+
+    <div class="chat-widget" data-open="false">
+        <button class="chat-toggle" type="button" aria-label="Open chat" aria-expanded="false"
+            aria-controls="chat-panel">
+            <img class="chat-toggle-icon" src="avatar.png" alt="">
+        </button>
+
+        <section id="chat-panel" class="chat-panel" aria-label="Chatbot">
+            <div class="chat-panel-header">
+                <div class="chat-panel-title">Ask Us Anything</div>
+                <button class="chat-close" type="button" aria-label="Close chat">Close</button>
+            </div>
+            <iframe class="chat-frame" title="Ape_Kama chatbot" allow="microphone;" loading="lazy"
+                src="https://console.dialogflow.com/api-client/demo/embedded/3e770f6d-d31d-4c36-a234-a1f1cf6672f4"></iframe>
+        </section>
+    </div>
+
+    <script>
+        (function () {
+            const widget = document.querySelector('.chat-widget');
+            const toggle = document.querySelector('.chat-toggle');
+            const closeBtn = document.querySelector('.chat-close');
+
+            if (!widget || !toggle || !closeBtn) return;
+
+            function setOpen(isOpen) {
+                widget.dataset.open = String(isOpen);
+                toggle.setAttribute('aria-expanded', String(isOpen));
+                toggle.setAttribute('aria-label', isOpen ? 'Close chat' : 'Open chat');
+            }
+
+            toggle.addEventListener('click', function () {
+                const isOpen = widget.dataset.open === 'true';
+                setOpen(!isOpen);
+            });
+
+            closeBtn.addEventListener('click', function () {
+                setOpen(false);
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
